@@ -33,7 +33,7 @@ import sys
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
-import pandas as pd
+import openpyxl
 
 import regras
 from regras import (
@@ -105,47 +105,100 @@ COLS_BALANCETE_OBRIG = ["Conta", "Descricao", "Saldo_Atual"]
 COLS_CADASTRO_OBRIG = ["Conta", "Descricao", "Classificacao"]
 
 
-def _ler_planilha(caminho: str, nome: str) -> pd.DataFrame:
+def _num(valor) -> Optional[float]:
+    """Converte o valor de uma célula em float. Retorna None se não for número.
+    Aceita número puro ou texto no formato brasileiro (1.234,56) ou americano."""
+    if valor is None:
+        return None
+    if isinstance(valor, bool):
+        return None
+    if isinstance(valor, (int, float)):
+        return float(valor)
+    s = str(valor).strip().replace("R$", "").replace(" ", "")
+    if s == "":
+        return None
+    negativo = s.startswith("(") and s.endswith(")")
+    s = s.strip("()")
+    if "," in s and "." in s:          # 1.234,56 -> 1234.56
+        s = s.replace(".", "").replace(",", ".")
+    elif "," in s:                       # 1234,56 -> 1234.56
+        s = s.replace(",", ".")
     try:
-        df = pd.read_excel(caminho, dtype={"Conta": str})
+        n = float(s)
+        return -n if negativo else n
+    except ValueError:
+        return None
+
+
+def _ler_planilha(caminho: str, nome: str):
+    """Lê a primeira aba do .xlsx com openpyxl e devolve (cabeçalho, lista de dicts)."""
+    try:
+        wb = openpyxl.load_workbook(caminho, data_only=True, read_only=True)
     except FileNotFoundError:
         raise SystemExit(f"[ERRO] Arquivo de {nome} não encontrado: {caminho}")
     except Exception as e:
         raise SystemExit(f"[ERRO] Falha ao ler {nome} ({caminho}): {e}")
-    df.columns = [str(c).strip() for c in df.columns]
-    return df
+    ws = wb.active
+    linhas = list(ws.iter_rows(values_only=True))
+    wb.close()
+    if not linhas:
+        raise SystemExit(f"[ERRO] {nome} está vazio: {caminho}")
+    cabecalho = [str(c).strip() if c is not None else "" for c in linhas[0]]
+    registros = []
+    for r in linhas[1:]:
+        if r is None or all(c is None for c in r):
+            continue
+        d = {}
+        for i, col in enumerate(cabecalho):
+            if col:
+                d[col] = r[i] if i < len(r) else None
+        registros.append(d)
+    return cabecalho, registros
 
 
-def ler_balancete(caminho: str) -> pd.DataFrame:
-    df = _ler_planilha(caminho, "balancete")
-    faltando = [c for c in COLS_BALANCETE_OBRIG if c not in df.columns]
+def ler_balancete(caminho: str) -> List[dict]:
+    cabecalho, registros = _ler_planilha(caminho, "balancete")
+    faltando = [c for c in COLS_BALANCETE_OBRIG if c not in cabecalho]
     if faltando:
         raise SystemExit(
             f"[ERRO] Balancete sem as colunas obrigatórias: {faltando}. "
-            f"Colunas encontradas: {list(df.columns)}")
-    df = df.copy()
-    df["Conta"] = df["Conta"].astype(str).str.strip()
-    df["Descricao"] = df["Descricao"].astype(str).str.strip()
-    df["Saldo_Atual"] = pd.to_numeric(df["Saldo_Atual"], errors="coerce")
-    return df
+            f"Colunas encontradas: {cabecalho}")
+    linhas = []
+    for d in registros:
+        conta = str(d.get("Conta") or "").strip()
+        if conta == "":
+            continue
+        linhas.append({
+            "Conta": conta,
+            "Descricao": str(d.get("Descricao") or "").strip(),
+            "Saldo_Atual": _num(d.get("Saldo_Atual")),
+        })
+    return linhas
 
 
-def ler_cadastro(caminho: str) -> pd.DataFrame:
-    df = _ler_planilha(caminho, "cadastro Cofins")
-    faltando = [c for c in COLS_CADASTRO_OBRIG if c not in df.columns]
+def ler_cadastro(caminho: str) -> List[dict]:
+    cabecalho, registros = _ler_planilha(caminho, "cadastro Cofins")
+    faltando = [c for c in COLS_CADASTRO_OBRIG if c not in cabecalho]
     if faltando:
         raise SystemExit(
             f"[ERRO] Cadastro sem as colunas obrigatórias: {faltando}. "
-            f"Colunas encontradas: {list(df.columns)}")
-    df = df.copy()
-    df["Conta"] = df["Conta"].astype(str).str.strip()
-    # colunas opcionais com defaults
-    for col, default in [("Descricao", ""), ("Natureza", ""), ("CST_PIS", ""),
-                         ("CST_COFINS", ""), ("Gera_Credito", "N"), ("Observacao", "")]:
-        if col not in df.columns:
-            df[col] = default
-    df["Classificacao"] = df["Classificacao"].astype(str).str.strip().str.upper()
-    return df
+            f"Colunas encontradas: {cabecalho}")
+    linhas = []
+    for d in registros:
+        conta = str(d.get("Conta") or "").strip()
+        if conta == "":
+            continue
+        linhas.append({
+            "Conta": conta,
+            "Descricao": str(d.get("Descricao") or "").strip(),
+            "Natureza": str(d.get("Natureza") or "").strip().upper(),
+            "Classificacao": str(d.get("Classificacao") or "").strip().upper(),
+            "CST_PIS": str(d.get("CST_PIS") or "").strip(),
+            "CST_COFINS": str(d.get("CST_COFINS") or "").strip(),
+            "Gera_Credito": str(d.get("Gera_Credito") or "N").strip(),
+            "Observacao": str(d.get("Observacao") or "").strip(),
+        })
+    return linhas
 
 
 # --------------------------------------------------------------------------- #
@@ -155,19 +208,19 @@ def _to_bool_credito(valor) -> bool:
     return str(valor).strip().upper() in ("S", "SIM", "TRUE", "1", "Y", "YES")
 
 
-def classificar(balancete: pd.DataFrame, cadastro: pd.DataFrame,
+def classificar(balancete: List[dict], cadastro: List[dict],
                 cfg: Config, apur: Apuracao) -> None:
     """Percorre o balancete, aplica cadastro ou heurística e popula apur.contas."""
-    cad_idx = {row["Conta"]: row for _, row in cadastro.iterrows()}
+    cad_idx = {row["Conta"]: row for row in cadastro}
     contas_vistas = set()
 
-    for _, lin in balancete.iterrows():
+    for lin in balancete:
         conta = lin["Conta"]
         desc = lin["Descricao"]
         saldo = lin["Saldo_Atual"]
 
         # Saldo inválido -> inconsistência e pula
-        if pd.isna(saldo):
+        if saldo is None:
             apur.inconsistencias.append(Inconsistencia(
                 conta, desc, 0.0, "Saldo inválido",
                 "Coluna Saldo_Atual vazia ou não numérica.",
@@ -241,7 +294,7 @@ def classificar(balancete: pd.DataFrame, cadastro: pd.DataFrame,
             origem=origem, regra=regra, confianca=conf))
 
     # Contas no cadastro mas ausentes no balancete (informativo)
-    contas_balancete = set(balancete["Conta"])
+    contas_balancete = set(l["Conta"] for l in balancete)
     for conta, reg in cad_idx.items():
         if conta not in contas_balancete:
             apur.inconsistencias.append(Inconsistencia(

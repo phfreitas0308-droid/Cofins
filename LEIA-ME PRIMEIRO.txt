@@ -1,0 +1,55 @@
+========================================================
+  APURACAO PIS/COFINS  -  COMO USAR (Windows)
+========================================================
+
+PASSO 1 - Descompacte
+   Clique com o botao direito no arquivo .zip que voce baixou
+   e escolha "Extrair Tudo...". Vai aparecer uma pasta com
+   varios arquivos dentro.
+   (IMPORTANTE: extraia mesmo. Nao rode de dentro do .zip.)
+
+PASSO 2 - Coloque seus dados
+   Dentro da pasta ha dois arquivos de exemplo:
+       balancete.xlsx
+       cadastro_cofins.xlsx
+   Substitua-os pelos seus, MANTENDO ESSES MESMOS NOMES.
+   (Dica: abra os exemplos no Excel, apague as linhas de
+    exemplo e cole seus dados por baixo dos titulos.)
+   Para so testar antes, pode usar os exemplos como estao.
+
+PASSO 3 - Rode com dois cliques
+   De dois cliques no arquivo:  APURAR.bat
+   Uma janela preta vai abrir e perguntar:
+       - o regime (digite 1 ou 2 e Enter)
+       - a competencia (ex.: 07/2026, ou so Enter para pular)
+   Pronto! Ele gera o "apuracao_resultado.xlsx" e abre a
+   planilha automaticamente.
+
+--------------------------------------------------------
+  SE O WINDOWS MOSTRAR UM AVISO AZUL ("Windows protegeu...")
+--------------------------------------------------------
+   So na primeira vez, o Windows pode avisar que protegeu
+   o computador. Faca assim:
+       1. Clique em "Mais informacoes"
+       2. Clique em "Executar assim mesmo"
+   Depois disso ele roda normal.
+
+--------------------------------------------------------
+  IMPORTANTE - PYTHON
+--------------------------------------------------------
+   Voce precisa ter o Python instalado. Se a janela preta
+   disser "Python nao encontrado", baixe em:
+       https://www.python.org/downloads/
+   e, na tela de instalacao, MARQUE a caixinha
+   "Add Python to PATH" antes de clicar em Install.
+
+   Observacao: este programa NAO usa mais a biblioteca
+   "pandas" (que dava erro no Python 3.14). Agora usa
+   apenas "openpyxl", que o proprio APURAR.bat instala.
+
+--------------------------------------------------------
+  DEU ALGUM ERRO?
+--------------------------------------------------------
+   Tire um print da janela preta e me mande aqui na conversa
+   que eu te ajudo a resolver.
+========================================================
