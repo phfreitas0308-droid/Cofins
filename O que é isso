@@ -1,50 +1,22 @@
- File "C:\Users\pfreitas005\AppData\Local\Python\pythoncore-3.14-64\Lib\platform.py", line 347, in _wmi_query
-    data = _wmi.exec_query("SELECT {} FROM {}".format(
-           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        ",".join(keys),
-        ^^^^^^^^^^^^^^^
-        table,
-        ^^^^^^
-    )).split("\0")
-    ^^
-OSError: [WinError -2147217389] Windows Error 0x80041013
+============================================================
+   APURACAO PIS / COFINS - INSTITUICAO FINANCEIRA (COSIF)
+   Regime cumulativo: PIS 0,65% + COFINS 4,00% (sem credito)
+============================================================
 
-During handling of the above exception, another exception occurred:
+ Preparando o ambiente (pode demorar na 1a vez)...
+ Pronto.
 
-Traceback (most recent call last):
-  File "C:\Users\pfreitas005\Downloads\Cofins\apuracao_pis_cofins.py", line 36, in <module>
-    import pandas as pd
-  File "C:\Users\pfreitas005\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pandas\__init__.py", line 34, in <module>
-    from pandas.compat import (
-        is_numpy_dev as _is_numpy_dev,  # pyright: ignore[reportUnusedImport] # noqa: F401
-    )
-  File "C:\Users\pfreitas005\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pandas\compat\__init__.py", line 18, in <module>
-    from pandas.compat._constants import (
-    ...<7 lines>...
-    )
-  File "C:\Users\pfreitas005\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pandas\compat\_constants.py", line 19, in <module>
-    WASM = (sys.platform == "emscripten") or (platform.machine() in ["wasm32", "wasm64"])
-                                              ~~~~~~~~~~~~~~~~^^
-  File "C:\Users\pfreitas005\AppData\Local\Python\pythoncore-3.14-64\Lib\platform.py", line 1127, in machine
-    return uname().machine
-           ~~~~~^^
-  File "C:\Users\pfreitas005\AppData\Local\Python\pythoncore-3.14-64\Lib\platform.py", line 1016, in uname
-    release, version, csd, ptype = win32_ver()
-                                   ~~~~~~~~~^^
-  File "C:\Users\pfreitas005\AppData\Local\Python\pythoncore-3.14-64\Lib\platform.py", line 467, in win32_ver
-    version, csd, ptype, is_client = _win32_ver(version, csd, ptype)
-                                     ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\pfreitas005\AppData\Local\Python\pythoncore-3.14-64\Lib\platform.py", line 408, in _win32_ver
-    (version, product_type, ptype, spmajor, spminor)  = _wmi_query(
-                                                        ~~~~~~~~~~^
-        'OS',
-        ^^^^^
-    ...<4 lines>...
-        'ServicePackMinorVersion',
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^
-    )
-    ^
-  File "C:\Users\pfreitas005\AppData\Local\Python\pythoncore-3.14-64\Lib\platform.py", line 353, in _wmi_query
-    raise OSError("not supported")
-          ~~~~~~~^^^^^^^^^^^^^^^^^
-KeyboardInterrupt
+Competencia (ex.: 07/2026) ou Enter para pular:
+Nome da instituicao (ou Enter para pular):
+
+ Calculando...
+
+C:\Users\pfreitas005\AppData\Local\Python\pythoncore-3.14-64\python.exe: can't open file 'C:\\Users\\pfreitas005\\Downloads\\apuracao_if.py': [Errno 2] No such file or directory
+
+============================================================
+   PRONTO! Gerado: apuracao_resultado.xlsx
+============================================================
+The process cannot access the file because it is being used by another process.
+
+Press any key to continue . . .
+Terminate batch job (Y/N)?
