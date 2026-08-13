@@ -178,7 +178,8 @@ def ler_balancete(caminho: str) -> List[dict]:
         })
 
   def ler_balancete(caminho: str) -> List[dict]:
-    cabecalho, registros = _ler_planilha(caminho, "balancete COSpa_colunas = {
+    cabecalho, registros = _ler_planilha(caminho, "balancete COSIF") 
+    mapa_colunas = {
         "Conta COSIF": "Conta",
         "Descrição da Conta": "Descricao",
         "Saldo Final": "Saldo_Atual",
