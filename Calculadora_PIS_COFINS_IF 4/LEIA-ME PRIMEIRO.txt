@@ -1,0 +1,60 @@
+================================================================
+  CALCULADORA PIS/COFINS - INSTITUICAO FINANCEIRA (plano COSIF)
+================================================================
+
+O QUE ELA FAZ
+   Apura PIS e COFINS de instituicoes financeiras (bancos, financeiras,
+   cooperativas de credito, corretoras/DTVM, arrendamento) no regime
+   CUMULATIVO: PIS 0,65% + COFINS 4,00%, SEM credito, com deducoes da
+   base do art. 3o, 6o, I, da Lei 9.718/98.
+
+   Ela le o balancete no plano COSIF (grupo 7 = rendas, grupo 8 =
+   despesas) e calcula:
+       Base = Rendas Tributadas - Deducoes de Intermediacao Financeira
+
+--------------------------------------------------------------
+  COMO USAR (Windows) - 3 passos
+--------------------------------------------------------------
+  1) Extraia o .zip (botao direito > "Extrair Tudo"). Nao rode de
+     dentro do zip.
+
+  2) Coloque seus dados nos arquivos "balancete.xlsx" e "cadastro.xlsx"
+     (mantendo esses nomes). Ha exemplos de banco ja prontos na pasta
+     para voce testar antes.
+
+  3) De dois cliques em  APURAR_IF.bat
+     Ele pergunta a competencia e o nome da instituicao, calcula e
+     abre a planilha de resultado.
+
+  Se o Windows mostrar aviso azul ("Windows protegeu..."), clique em
+  "Mais informacoes" > "Executar assim mesmo" (so na 1a vez).
+
+--------------------------------------------------------------
+  LAYOUT DOS ARQUIVOS
+--------------------------------------------------------------
+  balancete.xlsx (aba "Balancete"):
+     Conta | Descricao | Saldo_Anterior | Debito | Credito | Saldo_Atual
+     - contas no plano COSIF (ex.: 7.1.1.10.00, 8.1.1.00.00)
+     - a apuracao usa a coluna Saldo_Atual
+
+  cadastro.xlsx (aba "Cadastro"):
+     Conta | Descricao | Natureza | Classificacao | CST_PIS | CST_COFINS | Observacao
+     - Classificacao (um destes valores):
+         RENDA_TRIBUTADA         -> renda que compoe a base
+         RENDA_EXCLUIDA          -> renda excluida / nao tributada
+         DEDUCAO_INTERMEDIACAO   -> deducao da base (6o I 'a' a 'e')
+         DESPESA_OPERACIONAL     -> despesa que NAO reduz a base
+         FORA_APURACAO           -> conta patrimonial / compensacao
+
+  Contas fora do cadastro sao classificadas automaticamente pela
+  descricao e registradas no Log de Inconsistencias para revisao.
+
+--------------------------------------------------------------
+  IMPORTANTE
+--------------------------------------------------------------
+  As deducoes 'a' a 'e' valem para bancos e instituicoes de credito.
+  Seguradoras, previdencia e capitalizacao tem deducoes proprias
+  (incisos II a IV do 6o) - avise para ajustarmos.
+
+  Duvida ou erro? Tire um print da janela preta e mande na conversa.
+================================================================
