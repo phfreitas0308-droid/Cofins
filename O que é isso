@@ -1,8 +1,3 @@
-============================================================
-   APURACAO PIS / COFINS - INSTITUICAO FINANCEIRA (COSIF)
-   Regime cumulativo: PIS 0,65% + COFINS 4,00% (sem credito)
-============================================================
-
  Preparando o ambiente (pode demorar na 1a vez)...
  Pronto.
 
@@ -11,12 +6,19 @@ Nome da instituicao (ou Enter para pular):
 
  Calculando...
 
-C:\Users\pfreitas005\AppData\Local\Python\pythoncore-3.14-64\python.exe: can't open file 'C:\\Users\\pfreitas005\\Downloads\\apuracao_if.py': [Errno 2] No such file or directory
+Traceback (most recent call last):
+  File "C:\Users\pfreitas005\OneDrive - PwC\Pis e Cofins\apuracao_if.py", line 382, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\pfreitas005\OneDrive - PwC\Pis e Cofins\apuracao_if.py", line 372, in main
+    apur = executar(args.balancete, args.cadastro, cfg)
+  File "C:\Users\pfreitas005\OneDrive - PwC\Pis e Cofins\apuracao_if.py", line 330, in executar
+    balancete = ler_balancete(balancete_path)
+  File "C:\Users\pfreitas005\OneDrive - PwC\Pis e Cofins\apuracao_if.py", line 151, in ler_balancete
+    cabecalho = [mapa_colunas.get(col, col) for col in cabecalho]
+                                                       ^^^^^^^^^
+UnboundLocalError: cannot access local variable 'cabecalho' where it is not associated with a value
 
-============================================================
-   PRONTO! Gerado: apuracao_resultado.xlsx
-============================================================
-The process cannot access the file because it is being used by another process.
+ [!] Algo deu errado. Leia as mensagens acima.
 
 Press any key to continue . . .
-Terminate batch job (Y/N)?
