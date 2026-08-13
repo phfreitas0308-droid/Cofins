@@ -177,45 +177,6 @@ def ler_balancete(caminho: str) -> List[dict]:
             "Saldo_Atual": _num(d.get("Saldo_Atual")),
         })
 
-  def ler_balancete(caminho: str) -> List[dict]:
-    cabecalho, registros = _ler_planilha(caminho, "balancete COSIF") 
-    mapa_colunas = {
-        "Conta COSIF": "Conta",
-        "Descrição da Conta": "Descricao",
-        "Saldo Final": "Saldo_Atual",
-    }
-
-    cabecalho = [mapa_colunas.get(col, col) for col in cabecalho]
-
-    for registro in registros:
-        for origem, destino in mapa_colunas.items():
-            if origem in registro:
-                registro[destino] = registro[origem]
-
-    faltando = [c for c in COLS_BALANCETE_OBRIG if c not in cabecalho]
-
-    if faltando:
-        raise SystemExit(
-            f"[ERRO] Balancete sem as colunas obrigatórias: {faltando}. "
-            f"Colunas encontradas: {cabecalho}"
-        )
-
-    linhas = []
-
-    for d in registros:
-        conta = str(d.get("Conta") or "").strip()
-
-        if conta == "":
-            continue
-
-        linhas.append({
-            "Conta": conta,
-            "Descricao": str(d.get("Descricao") or "").strip(),
-            "Saldo_Atual": _num(d.get("Saldo_Atual")),
-        })
-
-    return linhas
-
 def ler_cadastro(caminho: str) -> List[dict]:
     cabecalho, registros = _ler_planilha(caminho, "cadastro")
     faltando = [c for c in COLS_CADASTRO_OBRIG if c not in cabecalho]
