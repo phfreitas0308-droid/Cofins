@@ -140,7 +140,7 @@ def _ler_planilha(caminho: str, nome: str):
 
 
 def ler_balancete(caminho: str) -> List[dict]:
-    cabstros = _ler_planilha(caminho, "balancete COSIF")
+    cabecatro, registros = _ler_planilha(caminho, "balancete COSIF")
 
     mapa_colunas = {
         "Conta COSIF": "Conta",
